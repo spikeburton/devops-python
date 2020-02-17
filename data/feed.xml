@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:cc="http://cyber.law.harvard.edu/rss/creativeCommonsRssModule.html">
+    <channel>
+        <title><![CDATA[Stories by Spike Burton on Medium]]></title>
+        <description><![CDATA[Stories by Spike Burton on Medium]]></description>
+        <link>https://medium.com/@spikeburton?source=rss-a4b97b3dcd4c------2</link>
+        <image>
+            <url>https://cdn-images-1.medium.com/fit/c/150/150/2*bfdNVOJ3GOx-FHx_4V5cqA.jpeg</url>
+            <title>Stories by Spike Burton on Medium</title>
+            <link>https://medium.com/@spikeburton?source=rss-a4b97b3dcd4c------2</link>
+        </image>
+        <generator>Medium</generator>
+        <lastBuildDate>Mon, 17 Feb 2020 02:19:00 GMT</lastBuildDate>
+        <atom:link href="https://medium.com/feed/@spikeburton" rel="self" type="application/rss+xml"/>
+        <webMaster><![CDATA[yourfriends@medium.com]]></webMaster>
+        <atom:link href="http://medium.superfeedr.com" rel="hub"/>
+        <item>
+            <title><![CDATA[No title]]></title>
+            <link>https://medium.com/@spikeburton/-e2bbcbbd034f?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/e2bbcbbd034f</guid>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Mon, 23 Dec 2019 14:17:08 GMT</pubDate>
+            <atom:updated>2019-12-23T14:17:08.920Z</atom:updated>
+            <content:encoded><![CDATA[<p>🤯</p><img src="https://medium.com/_/stat?event=post.clientViewed&referrerSource=full_rss&postId=e2bbcbbd034f" width="1" height="1">]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Awesome, thanks for contributing that information!]]></title>
+            <link>https://medium.com/@spikeburton/awesome-thanks-for-contributing-that-information-5e2629009c4f?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/5e2629009c4f</guid>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Mon, 18 Nov 2019 14:54:17 GMT</pubDate>
+            <atom:updated>2019-11-18T14:54:17.259Z</atom:updated>
+            <content:encoded><![CDATA[<p>Awesome, thanks for contributing that information!</p><img src="https://medium.com/_/stat?event=post.clientViewed&referrerSource=full_rss&postId=5e2629009c4f" width="1" height="1">]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Mocking Events in Node.js with EventEmitter and Test Double]]></title>
+            <link>https://medium.com/@spikeburton/mocking-events-in-node-js-with-eventemitter-and-test-double-eacd4f71f4e4?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/eacd4f71f4e4</guid>
+            <category><![CDATA[nodejs]]></category>
+            <category><![CDATA[javascript]]></category>
+            <category><![CDATA[programming]]></category>
+            <category><![CDATA[testing]]></category>
+            <category><![CDATA[spike-burton]]></category>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Fri, 01 Nov 2019 02:15:04 GMT</pubDate>
+            <atom:updated>2019-11-01T03:39:14.305Z</atom:updated>
+            <content:encoded><![CDATA[<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/0*PjW79cAeRjhfojf7" /><figcaption>Photo by <a href="https://unsplash.com/@emilep?utm_source=medium&amp;utm_medium=referral">Émile Perron</a> on <a href="https://unsplash.com?utm_source=medium&amp;utm_medium=referral">Unsplash</a></figcaption></figure><p>Writing unit tests for asynchronous non-deterministic code can be tricky. How do you go about testing functions that make use of network calls or read from/write to the filesystem? Mocking libraries like testdouble or sinon can help. But what about testing these sorts of scenarios that make use of Node’s event loop? Consider the following example:</p><figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*k3NuYzmPbWvSDe1fALhMJg.png" /><figcaption>Asynchronous code making use of the event loop</figcaption></figure><p>In order to test this function and cover all the bases, we need to be able to mock the connect, error and timeout events. In order to do this, we need to stub the connect and setTimeout methods. We can accomplish this by making use of an EventEmitter and stubbing the methods by attaching them to the emitter.</p><p>Let’s set up our test rig:</p><pre>npm init -y<br>npm install -D mocha chai testdouble<br>mkdir test &amp;&amp; touch test/ping.js</pre><p>We also want to configure the test script in package.json as follows:</p><pre>&quot;scripts&quot;: {<br>  &quot;test&quot;: &quot;mocha test/*&quot;<br>},<br>...</pre><p>Next, let’s set up and discuss the configuration for our tests:</p><figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*MYahDjXYk7cM9SPvb6cXfA.png" /><figcaption>Test set up and configuration</figcaption></figure><p>There’s a lot happening here. First, we are calling td.replace() on the net module, <strong>before </strong>requiring the code we wish to test. This is crucial, and is an odd quirk about testdouble and also the way that Node caches required modules. The replace method is similar to the built-in require method, except it <em>stubs all of the code </em>in that module.</p><p>Next, we are setting up some hooks that run before and after each test inside the describe block. In the beforeEach hook, here is where we create our “client”. In order to mock net.Socket, we can simply create an event emitter and attach stubbed methods directly to it. This gives us the ability to emit the events being listened for while faking the connect and setTimeout methods. When our code requests a new socket object, we will simply fake it out by returning this custom client object. This is precisely what the td.when(new net.Socket()) call inside our hook does. We also need to remove all event listeners when the “client” is destroyed. Finally, after each test runs, we need to reset testdouble by calling td.reset() to prevent test pollution.</p><p>Let’s write our first test:</p><figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*YZcbmuZIfVViFzJOPdPH_A.png" /><figcaption>Successful connection test case</figcaption></figure><p>First, we are stubbing the client.connect method by matching any inputs and simulating a successful connection by emitting a connect event. We are then calling our ping method, awaiting the response, and asserting that the response resolves to true. The catch block ensures that we handle the case when the Promise rejects on an error, if the error event were emitted.</p><p>I’ll leave it to you to handle the other base cases of when there is a timeout or an error 😉. If you’d like, you can check out my code <a href="https://github.com/spikeburton/testing-events">here</a>.</p><img src="https://medium.com/_/stat?event=post.clientViewed&referrerSource=full_rss&postId=eacd4f71f4e4" width="1" height="1">]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Sure, please feel free to reference :)]]></title>
+            <link>https://medium.com/@spikeburton/sure-please-feel-free-to-reference-40ad43f9d98a?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/40ad43f9d98a</guid>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Sun, 20 Oct 2019 17:01:41 GMT</pubDate>
+            <atom:updated>2019-10-20T17:01:41.029Z</atom:updated>
+            <content:encoded><![CDATA[<p>Sure, please feel free to reference :)</p><img src="https://medium.com/_/stat?event=post.clientViewed&referrerSource=full_rss&postId=40ad43f9d98a" width="1" height="1">]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Understanding Interfaces and Polymorphism in Go]]></title>
+            <description><![CDATA[<div class="medium-feed-item"><p class="medium-feed-image"><a href="https://medium.com/@spikeburton/understanding-interfaces-and-polymorphism-in-go-d65d60fe92cc?source=rss-a4b97b3dcd4c------2"><img src="https://cdn-images-1.medium.com/max/2600/0*YlmIg4jTzVsaEzeF" width="3369"></a></p><p class="medium-feed-snippet">One of the most powerful yet complex constructs of the Go programming language is that of interfaces. An interface in Go allows for&#x2026;</p><p class="medium-feed-link"><a href="https://medium.com/@spikeburton/understanding-interfaces-and-polymorphism-in-go-d65d60fe92cc?source=rss-a4b97b3dcd4c------2">Continue reading on Medium »</a></p></div>]]></description>
+            <link>https://medium.com/@spikeburton/understanding-interfaces-and-polymorphism-in-go-d65d60fe92cc?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/d65d60fe92cc</guid>
+            <category><![CDATA[polymorphism]]></category>
+            <category><![CDATA[go]]></category>
+            <category><![CDATA[programming]]></category>
+            <category><![CDATA[golang]]></category>
+            <category><![CDATA[spike-burton]]></category>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Sun, 08 Sep 2019 17:30:36 GMT</pubDate>
+            <atom:updated>2019-09-08T17:30:36.786Z</atom:updated>
+        </item>
+        <item>
+            <title><![CDATA[Why We All Need Docker]]></title>
+            <description><![CDATA[<div class="medium-feed-item"><p class="medium-feed-image"><a href="https://medium.com/@spikeburton/why-we-all-need-docker-a113b9d233d?source=rss-a4b97b3dcd4c------2"><img src="https://cdn-images-1.medium.com/max/2600/0*4cWy5jEygHpuNbpo" width="2880"></a></p><p class="medium-feed-snippet">The gap between development and production/deployment has long been narrowing. There is a growing need for developers to understand and&#x2026;</p><p class="medium-feed-link"><a href="https://medium.com/@spikeburton/why-we-all-need-docker-a113b9d233d?source=rss-a4b97b3dcd4c------2">Continue reading on Medium »</a></p></div>]]></description>
+            <link>https://medium.com/@spikeburton/why-we-all-need-docker-a113b9d233d?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/a113b9d233d</guid>
+            <category><![CDATA[web-development]]></category>
+            <category><![CDATA[javascript]]></category>
+            <category><![CDATA[docker]]></category>
+            <category><![CDATA[spike-burton]]></category>
+            <category><![CDATA[programming]]></category>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Sun, 01 Sep 2019 22:53:10 GMT</pubDate>
+            <atom:updated>2019-09-01T22:57:02.546Z</atom:updated>
+        </item>
+        <item>
+            <title><![CDATA[Concurrency, Async/Await, and Promise.all() in JavaScript]]></title>
+            <description><![CDATA[<div class="medium-feed-item"><p class="medium-feed-image"><a href="https://medium.com/swlh/concurrency-async-await-and-promise-all-in-javascript-ed617c41cb52?source=rss-a4b97b3dcd4c------2"><img src="https://cdn-images-1.medium.com/max/2600/0*yJVHX0GjtKZgEKCp" width="6000"></a></p><p class="medium-feed-snippet">Often when building web apps, we are writing asynchronous code&#x200A;&#x2014;&#x200A;making a network request to an external API, for example. Data retrieved&#x2026;</p><p class="medium-feed-link"><a href="https://medium.com/swlh/concurrency-async-await-and-promise-all-in-javascript-ed617c41cb52?source=rss-a4b97b3dcd4c------2">Continue reading on The Startup »</a></p></div>]]></description>
+            <link>https://medium.com/swlh/concurrency-async-await-and-promise-all-in-javascript-ed617c41cb52?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/ed617c41cb52</guid>
+            <category><![CDATA[web-development]]></category>
+            <category><![CDATA[programming]]></category>
+            <category><![CDATA[spike-burton]]></category>
+            <category><![CDATA[javascript]]></category>
+            <category><![CDATA[concurrency]]></category>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Sun, 25 Aug 2019 23:58:10 GMT</pubDate>
+            <atom:updated>2019-08-26T14:01:42.170Z</atom:updated>
+        </item>
+        <item>
+            <title><![CDATA[Getting Started with Rails 6 and React]]></title>
+            <description><![CDATA[<div class="medium-feed-item"><p class="medium-feed-image"><a href="https://medium.com/swlh/getting-started-with-rails-6-and-react-afac8255aecd?source=rss-a4b97b3dcd4c------2"><img src="https://cdn-images-1.medium.com/max/2600/0*e6JdvEY9EXRUnh8L" width="5184"></a></p><p class="medium-feed-snippet">Rails version 6 is out! One of the most exciting things about the newest release of Rails is the treatment of JavaScript as a first-class&#x2026;</p><p class="medium-feed-link"><a href="https://medium.com/swlh/getting-started-with-rails-6-and-react-afac8255aecd?source=rss-a4b97b3dcd4c------2">Continue reading on The Startup »</a></p></div>]]></description>
+            <link>https://medium.com/swlh/getting-started-with-rails-6-and-react-afac8255aecd?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/afac8255aecd</guid>
+            <category><![CDATA[spike-burton]]></category>
+            <category><![CDATA[ruby-on-rails]]></category>
+            <category><![CDATA[web-development]]></category>
+            <category><![CDATA[rails-6]]></category>
+            <category><![CDATA[react]]></category>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Sun, 18 Aug 2019 21:35:53 GMT</pubDate>
+            <atom:updated>2019-08-20T16:02:20.974Z</atom:updated>
+        </item>
+        <item>
+            <title><![CDATA[How to Get Started with Travis CI and Heroku]]></title>
+            <description><![CDATA[<div class="medium-feed-item"><p class="medium-feed-image"><a href="https://medium.com/@spikeburton/how-to-get-started-with-travis-ci-and-heroku-9f62d17dae98?source=rss-a4b97b3dcd4c------2"><img src="https://cdn-images-1.medium.com/max/2600/0*7qqg2r0UXM_mcr6r" width="5991"></a></p><p class="medium-feed-snippet">The process of setting up a project for deployment doesn&#x2019;t have to be a pain. If you are preparing and scaling for production throughout&#x2026;</p><p class="medium-feed-link"><a href="https://medium.com/@spikeburton/how-to-get-started-with-travis-ci-and-heroku-9f62d17dae98?source=rss-a4b97b3dcd4c------2">Continue reading on Medium »</a></p></div>]]></description>
+            <link>https://medium.com/@spikeburton/how-to-get-started-with-travis-ci-and-heroku-9f62d17dae98?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/9f62d17dae98</guid>
+            <category><![CDATA[continuous-integration]]></category>
+            <category><![CDATA[spike-burton]]></category>
+            <category><![CDATA[devops]]></category>
+            <category><![CDATA[ruby]]></category>
+            <category><![CDATA[web-development]]></category>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Sat, 10 Aug 2019 17:10:56 GMT</pubDate>
+            <atom:updated>2019-08-10T17:10:56.937Z</atom:updated>
+        </item>
+        <item>
+            <title><![CDATA[Why I Decided to Create a Personal Site with GatsbyJS]]></title>
+            <link>https://medium.com/@spikeburton/why-i-decided-to-create-a-personal-site-with-gatsbyjs-c56057d702a5?source=rss-a4b97b3dcd4c------2</link>
+            <guid isPermaLink="false">https://medium.com/p/c56057d702a5</guid>
+            <category><![CDATA[website]]></category>
+            <category><![CDATA[react]]></category>
+            <category><![CDATA[web-development]]></category>
+            <category><![CDATA[web-design]]></category>
+            <category><![CDATA[spike-burton]]></category>
+            <dc:creator><![CDATA[Spike Burton]]></dc:creator>
+            <pubDate>Sun, 04 Aug 2019 18:31:09 GMT</pubDate>
+            <atom:updated>2019-08-04T18:31:09.730Z</atom:updated>
+            <content:encoded><![CDATA[<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/0*d7vsQM3ecHS6AvNv" /><figcaption>Photo by <a href="https://unsplash.com/@cocktailbart?utm_source=medium&amp;utm_medium=referral">Johann Trasch</a> on <a href="https://unsplash.com?utm_source=medium&amp;utm_medium=referral">Unsplash</a></figcaption></figure><p>When I began thinking about how I’d like to build and structure a personal portfolio site, I looked into a number of options. Should I create a site with Squarespace or Wix, just to make things quick? Use a template from <a href="https://html5up.net/">HTML5 U</a>P? I knew I didn’t want to hand code <em>everything</em> from scratch, as it would be incredibly time consuming and inefficient. And then I heard about <a href="https://www.gatsbyjs.org/">GatsbyJS</a>.</p><p>I first heard about Gatsby when I went to a workshop at <a href="https://refactr.tech/">REFACTR.TECH</a>. I was immediately intrigued after learning that Gatsby is a static site generator built on top of React and GraphQL. This meant that I could build dynamic pages using React components, source outside data with GraphQL, and build an incredibly fast and responsive site that is compiled to static pages. I was sold.</p><p>After doing the tutorial series on the official website, I felt comfortable enough to take a stab at rolling my own. The one issue that I encountered was that I wanted to incorporate my Medium blog onto my site. Although there are a few ways to do this, what I ultimately decided to do was to build a microservice on AWS to fetch my latest feed from Medium and forward it to the client side of my site. Since Gatsby compiles everything to static pages, and you cannot fetch your Medium feed client-side due to CORS issues, this is why I chose to go that route. Alternatively, I could have sourced all my blog content with Gatsby before build time, which would certainly be a faster end-user experience. The problem with this route is that I would have to trigger a re-build of the site every time I posted to my blog through Medium in order to re-source all of the content. I wasn’t thrilled with this idea, but may return to this problem at a later point.</p><p>In terms of styling, I chose to do all of the design and layout by hand. With the help of <a href="https://emotion.sh/docs/introduction">Emotion</a>, I was able to write all of my CSS inline inside my React components — including psuedo-class selectors and media queries. Using this approach I made the site fully responsive across multiple device widths, and optimized the experience for mobile. Gatsby fully supports a multitude of styling options including use of LESS, SASS and CSS Modules — but for my purpose I chose this route due to the small scale of my site. This may need to be refactored in the future should the site grow in size and content.</p><p>The last concern I had was SEO and performance. Gatsby makes taking care of these tasks incredibly simple. All I had to do was edit gatsby-config.js to include the relevant metadata, and render the SEO component in each of my pages. I added an og:image metadata field with a photo from my public S3 bucket for an additional professional touch, which looks really nice when sending a link to my site through iOS Messages or Slack for example. Turning the site into a progressive web app is as simple as uncommenting a line in gatsby-config.js which registers a service worker for you.</p><p>When I felt satisfied with my site, a final deploy to Netlify was incredibly simple. All I had to do was setup continuous deployment from my GitHub repo through Netlify, and now every time I push/merge to my master branch this triggers a re-build with a webhook through Netlify. During development I used <a href="https://surge.sh/">surge</a> to push test builds of my site to show to friends for feedback and advice. Surge makes it incredibly easy to deploy with Gatsby, and a final teardown of the temporary site when I was done was just as simple.</p><p>When my site went live, I was thrilled when I performed an audit using Lighthouse in the Chrome dev tools. I was amazed to see just how well my site performed:</p><figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*qtmjJ6YBnmco0a__pcVEUw.png" /><figcaption>Audit using Lighthouse</figcaption></figure><p>Thanks for reading, and check out my site at <a href="https://spikeburton.me/">https://spikeburton.me/</a>!</p><img src="https://medium.com/_/stat?event=post.clientViewed&referrerSource=full_rss&postId=c56057d702a5" width="1" height="1">]]></content:encoded>
+        </item>
+    </channel>
+</rss>
