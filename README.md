@@ -5,7 +5,7 @@
 🐍🐍🐍
 
 ```sh
-conda create --name devops-python ipython jupyter pyyaml pandas numpy
+conda create --name devops-python ipython jupyter numpy pandas pyyaml yapf
 
 conda activate devops-python
 

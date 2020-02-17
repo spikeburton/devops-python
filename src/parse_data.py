@@ -6,7 +6,6 @@ import yaml
 with open('../data/playbook.yml', 'r') as opened:
     playbook = yaml.safe_load((opened))
 
-
 # %%
 import xml.etree.ElementTree as ET
 
@@ -16,5 +15,8 @@ root = tree.getroot()
 for ch in root:
     for child in ch:
         print(child.tag, child.attrib)
+
+# %%
+import pandas
 
 # %%
